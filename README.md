@@ -15,6 +15,7 @@ A standalone Unity package that manages mini-game definitions, lifecycle, and re
 - **Optional** SaveManager bridge — persist completion results across sessions (`MINIGAMEMANAGER_SM`)
 - **Optional** LocalizationManager bridge — resolve localized mini-game titles and descriptions via `titleLocalizationKey` / `descriptionLocalizationKey` fields (`MINIGAMEMANAGER_LM`)
 - **StateManager integration** — `MiniGame` state is pushed when a mini-game starts and popped on complete/abort by StateManager's `MiniGameManagerBridge` (consumed via `STATEMANAGER_MGM`)
+- **Odin Inspector integration** — `SerializedMonoBehaviour` base for full Inspector serialization of complex types; runtime-display fields marked `[ReadOnly]` in Play Mode (activated via `ODIN_INSPECTOR`)
 
 
 ## Installation
@@ -258,6 +259,7 @@ string title2 = bridge.GetTitle(data);
 | CutsceneManager | Optional — enable `MINIGAMEMANAGER_CSM` |
 | SaveManager | Optional — enable `MINIGAMEMANAGER_SM` |
 | LocalizationManager | Optional — enable `MINIGAMEMANAGER_LM` |
+| Odin Inspector | Optional — enable `ODIN_INSPECTOR` |
 
 
 ## Repository

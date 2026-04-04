@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+#if ODIN_INSPECTOR
+using Sirenix.OdinInspector;
+#endif
 
 namespace MiniGameManager.Runtime
 {
@@ -24,13 +27,20 @@ namespace MiniGameManager.Runtime
     /// </summary>
     [AddComponentMenu("MiniGameManager/Mini Game Manager")]
     [DisallowMultipleComponent]
+#if ODIN_INSPECTOR
+    public class MiniGameManager : SerializedMonoBehaviour
+#else
     public class MiniGameManager : MonoBehaviour
+#endif
     {
         // ─── Inspector ───────────────────────────────────────────────────────────
         [Tooltip("If true, definitions are also loaded from persistentDataPath/MiniGames/.")]
         [SerializeField] private bool loadFromPersistentDataPath = true;
 
         [Header("Loaded mini-games (read-only, set at runtime)")]
+#if ODIN_INSPECTOR
+        [ReadOnly]
+#endif
         [SerializeField] private List<string> loadedMiniGameIds = new List<string>();
 
         // ─── Events ──────────────────────────────────────────────────────────────
