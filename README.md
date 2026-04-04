@@ -14,6 +14,7 @@ A standalone Unity package that manages mini-game definitions, lifecycle, and re
 - **Optional** CutsceneManager bridge — launch / complete / abort via cutscene custom-event payloads (`MINIGAMEMANAGER_CSM`)
 - **Optional** SaveManager bridge — persist completion results across sessions (`MINIGAMEMANAGER_SM`)
 - **Optional** LocalizationManager bridge — resolve localized mini-game titles and descriptions via `titleLocalizationKey` / `descriptionLocalizationKey` fields (`MINIGAMEMANAGER_LM`)
+- **StateManager integration** — `MiniGame` state is pushed when a mini-game starts and popped on complete/abort by StateManager's `MiniGameManagerBridge` (consumed via `STATEMANAGER_MGM`)
 
 
 ## Installation
