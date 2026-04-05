@@ -15,6 +15,7 @@ A standalone Unity package that manages mini-game definitions, lifecycle, and re
 - **Optional** SaveManager bridge — persist completion results across sessions (`MINIGAMEMANAGER_SM`)
 - **Optional** LocalizationManager bridge — resolve localized mini-game titles and descriptions via `titleLocalizationKey` / `descriptionLocalizationKey` fields (`MINIGAMEMANAGER_LM`)
 - **StateManager integration** — `MiniGame` state is pushed when a mini-game starts and popped on complete/abort by StateManager's `MiniGameManagerBridge` (consumed via `STATEMANAGER_MGM`)
+- **DOTween Pro integration** — `CanvasGroup.DOFade` drives launch overlay and result panel transitions; `DOVirtual.Int` rolls score counters on completion (activated via `MINIGAMEMANAGER_DOTWEEN`)
 - **Odin Inspector integration** — `SerializedMonoBehaviour` base for full Inspector serialization of complex types; runtime-display fields marked `[ReadOnly]` in Play Mode (activated via `ODIN_INSPECTOR`)
 
 
