@@ -1,0 +1,14 @@
+{
+  "id": "puzzle_ch01_reactor",
+  "title": "Reactor Puzzle",
+  "description": "Restore power to the research station by connecting the reactor cores in the correct order before the countdown expires.",
+  "sceneOrPrefab": "MiniGame_ReactorPuzzle",
+  "category": 0,
+  "canReplay": true,
+  "trackScore": true,
+  "minPassScore": 500,
+  "timeLimit": 90,
+  "maxAttempts": -1,
+  "rewardEventId": "minigame.reactor.solved",
+  "failEventId": "minigame.reactor.failed"
+}
