@@ -1,16 +1,24 @@
 #if UNITY_EDITOR
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 using MiniGameManager.Runtime;
+#if ODIN_INSPECTOR
+using Sirenix.OdinInspector.Editor;
+#endif
 
 namespace MiniGameManager.Editor
 {
-    /// <summary>
-    /// Custom Inspector for <see cref="MiniGameManager.Runtime.MiniGameManager"/>.
-    /// Shows loaded definitions, completion results, active mini-game state, and manual launch controls.
-    /// </summary>
+    // ODIN Inspector: when ODIN_INSPECTOR is defined the manager extends
+    // SerializedMonoBehaviour. The custom editor must derive from OdinEditor
+    // so ODIN's full property tree is drawn correctly.
+#if ODIN_INSPECTOR
+    [CustomEditor(typeof(Runtime.MiniGameManager))]
+    public class MiniGameManagerEditor : OdinEditor
+#else
     [CustomEditor(typeof(Runtime.MiniGameManager))]
     public class MiniGameManagerEditor : UnityEditor.Editor
+#endif
     {
         private string  _launchId      = string.Empty;
         private bool    _showDefs      = true;
@@ -19,7 +27,9 @@ namespace MiniGameManager.Editor
 
         public override void OnInspectorGUI()
         {
-            DrawDefaultInspector();
+            // base.OnInspectorGUI() renders the full ODIN property tree when
+            // inheriting from OdinEditor, or the standard Unity inspector otherwise.
+            base.OnInspectorGUI();
 
             var mgr = (Runtime.MiniGameManager)target;
 
@@ -117,6 +127,100 @@ namespace MiniGameManager.Editor
             EditorGUILayout.EndVertical();
 
             Repaint();
+        }
+    }
+
+    // ── Prefab generation ──────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Generates MiniGame trigger prefabs from Resources/MiniGames/*.json.
+    /// Lives in MiniGameManager.Editor so MiniGameData and MiniGameTrigger are
+    /// directly accessible without a separate assembly dependency.
+    /// </summary>
+    internal static class MiniGamePrefabHelper
+    {
+        internal const string MiniGamesPrefix = "Assets/Resources/MiniGames/";
+        private  const string OutDir          = "Assets/Resources/Prefabs/Items";
+
+        [MenuItem("Generate Prefabs/MiniGames", priority = 103)]
+        public static void GenerateMiniGamePrefabs()
+        {
+            var dir = Path.Combine(Application.dataPath, "Resources", "MiniGames");
+            if (!Directory.Exists(dir)) { Debug.LogError("[MiniGamePrefabHelper] Resources/MiniGames not found."); return; }
+
+            EnsureDirectory(OutDir);
+
+            int n = 0;
+            foreach (var file in Directory.GetFiles(dir, "*.json"))
+            {
+                var data = JsonUtility.FromJson<MiniGameData>(File.ReadAllText(file));
+                if (data == null || string.IsNullOrEmpty(data.id)) continue;
+
+                var go = BuildMiniGameGo(data);
+                var fname = !string.IsNullOrEmpty(data.sceneOrPrefab) ? data.sceneOrPrefab : data.id;
+                SavePrefab(go, $"{OutDir}/{fname}.prefab");
+                UnityEngine.Object.DestroyImmediate(go);
+                n++;
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Debug.Log($"[MiniGamePrefabHelper] Generated {n} MiniGame prefabs \u2192 {OutDir}");
+        }
+
+        private static GameObject BuildMiniGameGo(MiniGameData data)
+        {
+            var go = new GameObject(data.sceneOrPrefab ?? data.id);
+
+            // MiniGameTrigger fields are [SerializeField] private — use SerializedObject.
+            var trigger = go.AddComponent<MiniGameTrigger>();
+            var so = new SerializedObject(trigger);
+            so.FindProperty("miniGameId").stringValue        = data.id;
+            so.FindProperty("triggerMode").enumValueIndex    = 0; // OnStart
+            so.FindProperty("triggerTag").stringValue        = "Player";
+            so.FindProperty("disableAfterTrigger").boolValue = true;
+            so.ApplyModifiedProperties();
+
+            go.AddComponent<AudioSource>().playOnAwake = false;
+
+            return go;
+        }
+
+        private static void SavePrefab(GameObject go, string assetPath)
+        {
+            bool ex = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath) != null;
+            PrefabUtility.SaveAsPrefabAsset(go, assetPath, out bool ok);
+            if (!ok) Debug.LogWarning($"[PrefabGen] \u2717 {assetPath}");
+            else     Debug.Log(ex ? $"[PrefabGen] \u21ba {assetPath}" : $"[PrefabGen] \u2713 {assetPath}");
+        }
+
+        private static void EnsureDirectory(string assetPath)
+        {
+            Directory.CreateDirectory(Path.Combine(
+                Path.GetDirectoryName(Application.dataPath)!,
+                assetPath.Replace('/', Path.DirectorySeparatorChar)));
+        }
+
+        [UnityEditor.InitializeOnLoadMethod]
+        static void RegisterWithPrefabGenerator()
+        {
+            PrefabGenerator.Register("MiniGames", GenerateMiniGamePrefabs);
+        }
+    }
+
+    internal class MiniGamePrefabPostprocessor : AssetPostprocessor
+    {
+        static void OnPostprocessAllAssets(
+            string[] imported, string[] deleted, string[] moved, string[] movedFrom)
+        {
+            foreach (var p in imported)
+            {
+                if (p.StartsWith(MiniGamePrefabHelper.MiniGamesPrefix) && p.EndsWith(".json"))
+                {
+                    MiniGamePrefabHelper.GenerateMiniGamePrefabs();
+                    return;
+                }
+            }
         }
     }
 }

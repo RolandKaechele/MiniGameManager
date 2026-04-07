@@ -9,10 +9,16 @@
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
+    "overrideReferences": true,
     "precompiledReferences": [],
     "autoReferenced": false,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.sirenix.odinInspector",
+            "expression": "",
+            "define": "ODIN_INSPECTOR"
+        }
+    ],
     "noEngineReferences": false
 }

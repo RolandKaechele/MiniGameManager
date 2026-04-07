@@ -265,6 +265,34 @@ string title2 = bridge.GetTitle(data);
 | Odin Inspector | Optional — enable `ODIN_INSPECTOR` |
 
 
+## Editor Tools — Prefab Generation
+
+`MiniGameManagerEditor.cs` in `Editor/` doubles as a prefab generator.
+`MiniGamePrefabHelper` reads every `Resources/MiniGames/*.json` file and outputs one trigger prefab per `MiniGameData` into `Assets/Resources/Prefabs/Items/`.
+
+**Manual**
+
+- **Generate Prefabs → MiniGames** in the Unity menu bar
+- **Generate Prefabs → All** (`Ctrl+Shift+G`) — regenerates all registered prefab generators in one step
+
+**Automatic**
+Saving any `Resources/MiniGames/*.json` file triggers `MiniGamePrefabPostprocessor` via `AssetPostprocessor.OnPostprocessAllAssets`.
+
+**What is generated per prefab**
+
+| Component | Details |
+| --------- | ------- |
+| `MiniGameTrigger` | `miniGameId` = definition `id`; `triggerMode` = `OnStart`; `disableAfterTrigger` = `true` |
+| `AudioSource` | `playOnAwake = false` |
+
+All `MiniGameTrigger` fields are `[SerializeField] private` and are written via `SerializedObject.FindProperty()` — no reflection required and fully compatible with Undo/Redo.
+
+> Generated prefabs are starting points. Attach scene loader logic, UI canvas, and gameplay scripts before shipping.
+
+**ODIN Inspector compatibility**
+When `ODIN_INSPECTOR` is defined, `MiniGameManagerEditor` inherits `OdinEditor` so the full ODIN property tree is rendered. The prefab generation helper `MiniGamePrefabHelper` is a plain static class and is completely ODIN-independent.
+
+
 ## Repository
 
 `https://github.com/RolandKaechele/MiniGameManager`
