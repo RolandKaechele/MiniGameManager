@@ -1,23 +1,25 @@
 {
-  "name": "com.rolandkaechele.minigamemanager",
-  "version": "1.0.0",
-  "displayName": "Mini Game Manager",
-  "description": "Standalone mini-game lifecycle manager for Unity with JSON definitions and optional MapLoaderFramework, CutsceneManager, and SaveManager integration.",
-  "unity": "2022.3",
-  "author": {
-    "name": "Roland Kaechele"
-  },
-  "keywords": [
-    "minigame",
-    "mini-game",
-    "puzzle",
-    "gameplay",
-    "maploader",
-    "cutscene",
-    "save"
-  ],
-  "scripts": {
-    "postinstall": "node postinstall.js"
-  },
-  "dependencies": {}
+    "name":  "com.rolandkaechele.minigamemanager",
+    "version":  "1.0.0",
+    "displayName":  "Mini Game Manager",
+    "description":  "Standalone mini-game lifecycle manager for Unity with JSON definitions and optional MapLoaderFramework, CutsceneManager, and SaveManager integration.",
+    "unity":  "2022.3",
+    "author":  {
+                   "name":  "Roland Kaechele"
+               },
+    "keywords":  [
+                     "minigame",
+                     "mini-game",
+                     "puzzle",
+                     "gameplay",
+                     "maploader",
+                     "cutscene",
+                     "save"
+                 ],
+    "scripts":  {
+                    "postinstall":  "node postinstall.js"
+                },
+    "dependencies":  {
+
+                     }
 }
