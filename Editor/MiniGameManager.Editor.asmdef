@@ -2,7 +2,8 @@
     "name": "MiniGameManager.Editor",
     "rootNamespace": "MiniGameManager.Editor",
     "references": [
-        "MiniGameManager.Runtime"
+        "MiniGameManager.Runtime",
+        "PrefabGenerator.Editor"
     ],
     "includePlatforms": [
         "Editor"
