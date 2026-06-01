@@ -1,6 +1,6 @@
 #if MINIGAMEMANAGER_DOTWEEN
 using UnityEngine;
-using UnityEngine.UI;
+
 using DG.Tweening;
 
 namespace MiniGameManager.Runtime

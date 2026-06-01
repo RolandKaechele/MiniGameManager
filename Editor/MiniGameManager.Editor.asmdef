@@ -1,9 +1,10 @@
-﻿{
+{
     "name": "MiniGameManager.Editor",
     "rootNamespace": "MiniGameManager.Editor",
     "references": [
         "MiniGameManager.Runtime",
-        "PrefabGenerator.Editor"
+        "PrefabGenerator.Editor",
+        "UnityEngine.UI"
     ],
     "includePlatforms": [
         "Editor"
